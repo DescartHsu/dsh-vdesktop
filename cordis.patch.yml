@@ -1,0 +1,8 @@
+- insert:
+    - id: vdesktop
+      name: dsh-vdesktop
+      config:
+        sidecarPath: python
+        sidecarArgs: ['-m', 'dshv', '--rpc', 'stdio']
+        sidecarCwd: 'D:\Project\dsh-virtaul-computer\sidecar'
+        callTimeoutMs: 60000

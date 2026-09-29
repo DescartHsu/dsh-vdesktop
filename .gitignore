@@ -1,0 +1,33 @@
+# 依赖
+node_modules/
+
+# 开发辅助（本机的 brain 决策工作区，不随仓库发布）
+.deepseek-brain/
+dsh-deepseek-brain-preset/
+.dshv/
+tools/
+
+# 设计文档 / 开发史（保留在作者本地，不随仓库发布）
+docs/
+
+# Python
+**/__pycache__/
+*.pyc
+
+# sidecar/：产品 = dshv/ 包 + pyproject.toml；其余顶层文件为一次性
+# 探测/验收 scratch（保留在作者本地，不随仓库发布）
+sidecar/*
+!sidecar/dshv/
+!sidecar/pyproject.toml
+
+# scripts/：仅保留构建脚本（npm run build）；其余一次性补丁/验收/诊断脚本
+# 及开发期 stub（build-sidecar.ps1 / dev-link.ps1 / start-host.bat）不入仓库
+scripts/*
+!scripts/build-ts.mjs
+
+# 其他杂物
+*.log
+Thumbs.db
+.DS_Store
+.vscode/
+.idea/

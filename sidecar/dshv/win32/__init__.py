@@ -1,0 +1,1 @@
+"""dshv.win32 — Win32 ctypes layer (desktops, processes, GDI capture, input, DPI)."""
