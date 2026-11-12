@@ -1,13 +1,15 @@
 {
   "name": "dsh-vdesktop",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "type": "module",
   "main": "lib/index.js",
   "exports": {
     ".": "./lib/index.js",
-    "./client": "./lib/client.js"
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
   },
+  "files": ["lib", "sidecar/dshv/**/*.py", "cordis.patch.yml", "README.md", "LICENSE"],
   "dsh": {
     "bundle": {
       "patch": "./cordis.patch.yml"
@@ -15,16 +17,14 @@
     "client": {
       "platform": "web"
     },
-    "inject": ["computerUse", "tools"]
+    "inject": ["tools"]
   },
   "scripts": {
     "build": "node scripts/build-ts.mjs",
     "dev-link": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/dev-link.ps1"
   },
-  "dependencies": {
-    "esbuild": "^0.23.0"
-  },
   "devDependencies": {
+    "esbuild": "^0.23.0",
     "typescript": "^5.5.3",
     "@types/node": "^22.5.0"
   }

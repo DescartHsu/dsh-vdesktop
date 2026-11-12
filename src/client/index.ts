@@ -21,7 +21,7 @@ async function probeFrameServer(): Promise<FrameInfo | null> {
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), 1500);
     try {
-      const r = await fetch(`${location.protocol}//${location.hostname}:${port}/vdesk/desktops`, {
+      const r = await fetch(`http://127.0.0.1:${port}/vdesk/desktops`, {
         cache: 'no-store',
         signal: ctrl.signal,
       });
@@ -123,7 +123,7 @@ export function install(loader: {
                   if (!open || !info || !desktop) return;
                   const el = rootRef.current;
                   if (!el) return;
-                  const base = `${location.protocol}//${location.hostname}:${info.port}`;
+                  const base = `http://127.0.0.1:${info.port}`;
                   const panel = new VDesktopPanel(el, {
                     desktop,
                     frameUrl: `${base}/vdesk/frame`,

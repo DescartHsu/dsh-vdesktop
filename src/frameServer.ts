@@ -48,7 +48,7 @@ export class FrameServer {
     for (let port = base; port <= max; port++) {
       try {
         fs.server = await fs.listenOne(port);
-        opts.log(`[dsh-vdesktop] frame server listening on 0.0.0.0:${port} (all interfaces, follows dsh bind)`);
+        opts.log(`[dsh-vdesktop] frame server listening on 127.0.0.1:${port}`);
         return fs;
       } catch (e) {
         lastErr = e;
@@ -90,7 +90,7 @@ export class FrameServer {
           reject(e);
         }
       });
-      server.listen(port); // 跟随 dsh 的绑定（0.0.0.0），绑全接口（IPv6 dual-stack）
+      server.listen(port, '127.0.0.1');
       server.once('listening', () => resolve(server));
     });
   }
@@ -115,9 +115,7 @@ export class FrameServer {
 
   private corsHeaders(origin: string | undefined): Record<string, string> {
     const h: Record<string, string> = {};
-    // LAN 化：跟随 dsh 的 token 门作为唯一鉴权；CORS 反射任意 http(s) origin。
-    // 旧行为精确匹配 webOrigin，LAN origin=http://<lan-ip>:3080 会被浏览器拦。
-    if (origin && (origin.startsWith('http://') || origin.startsWith('https://'))) {
+    if (origin === this.webOrigin || origin === 'dsh-app://app') {
       h['Access-Control-Allow-Origin'] = origin;
       h['Vary'] = 'Origin';
       h['Access-Control-Expose-Headers'] = FrameServer.EXPOSE_HEADERS;
@@ -128,6 +126,13 @@ export class FrameServer {
   private async dispatch(req: http.IncomingMessage, res: http.ServerResponse): Promise<void> {
     const url = new URL(req.url ?? '/', 'http://127.0.0.1');
     const cors = this.corsHeaders(req.headers.origin);
+    if (req.headers.host !== `127.0.0.1:${this.port}` ||
+        (req.headers.origin !== undefined && !cors['Access-Control-Allow-Origin']) ||
+        (!req.headers.origin && req.headers['sec-fetch-site'] === 'cross-site')) {
+      res.writeHead(403);
+      res.end();
+      return;
+    }
     if (req.method === 'OPTIONS') {
       Object.assign(cors, {
         'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',

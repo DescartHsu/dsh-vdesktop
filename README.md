@@ -55,33 +55,17 @@
 
 ## 安装
 
-1. 克隆本仓库并构建（仓库已附带 `lib/` 构建产物，仅当源码有改动时才需要重新构建）：
+此 fork 的安装包已包含宿主、可拖动浮钮和 Python sidecar。Windows 需要可执行的 `python`（3.11 或更新版本）。
 
-   ```powershell
-   git clone <本仓库地址> dsh-vdesktop
-   cd dsh-vdesktop
-   npm install
-   npm run build        # esbuild → lib/（可选，lib/ 已入库）
-   ```
+在已安装 DSH 命令行的 PowerShell 中，将插件加入桌面配置：
 
-2. 在 DSH 的 **web profile** 中安装插件（以 `C:\Users\<你>\.dsh\profiles\web` 为例）：
+```powershell
+dsh plugin --profile desktop add https://github.com/DescartHsu/dsh-vdesktop/releases/download/v0.2.1/dsh-vdesktop-0.2.1.tgz
+```
 
-   - 在该 profile 的 `package.json` 的 `dependencies` 里加一行指向本仓库的 `link:` 依赖；
-   - 在 profile 配置中把 `dsh-vdesktop` 加入 `dsh.profile.bundles`；
-   - `pnpm install`（或 `npm install`）后**重启 DSH**。
+安装命令会自动启用插件，安装完成后重新打开 DSH。使用 Web profile 时将命令中的 `desktop` 换成 `web`。插件会自行定位随包安装的 sidecar。本地 Web 界面默认支持 `http://127.0.0.1:3080`，使用其他本地 Web 地址时可在插件配置中设置 `webOrigin`。
 
-   链接安装的写法示例：`"dsh-vdesktop": "link:<本仓库绝对路径>"`。
-
-3. **确认 sidecar 工作目录**：插件以 `python -m dshv --rpc stdio` 拉起 sidecar，工作目录由 `sidecarCwd` 决定。仓库自带的 `cordis.patch.yml` 与 `src/config.ts` 中的默认值是作者的本地路径（`D:\Project\dsh-virtaul-computer\sidecar`），安装时请改成 **`<本仓库路径>\sidecar`**（绝对路径）。
-
-4. **安装后自检**（DSH 重启、插件加载后，任选其一）：
-
-   ```powershell
-   curl.exe -s http://127.0.0.1:8790/vdesk/desktops    # 返回 {"desktops":[...]} 即数据面已就绪
-   curl.exe -s -o NUL -w "%{http_code}" "http://127.0.0.1:8790/vdesk/frame?desktop=dshv-e2e"  # 200 即抓帧链路通
-   ```
-
-   打开 DSH Web GUI，`VDesktopPanel` 面板出现桌面画面即全部就绪。
+右下角的“虚拟桌面”按钮可以直接拖到窗口内其他位置，松手后会记住位置。单击按钮打开或收起面板。
 
 ## 使用
 

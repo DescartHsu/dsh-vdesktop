@@ -9,7 +9,7 @@ import { sweepOnBoot } from './orphanSweep.js';
 import { GUIDANCE } from './guidance.js';
 
 export const name = 'dsh-vdesktop';
-export const inject = ['computerUse', 'tools'];
+export const inject = ['tools'];
 
 export function apply(ctx: Context, raw: Partial<VDesktopConfig> = {}): void {
   const cfg: VDesktopConfig = { ...defaultConfig, ...raw };
@@ -48,4 +48,5 @@ export function apply(ctx: Context, raw: Partial<VDesktopConfig> = {}): void {
   );
 }
 
-export default apply;
+// Cordis reads dependency metadata from the resolved default export.
+export default Object.assign(apply, { inject });

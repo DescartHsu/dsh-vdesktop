@@ -1,3 +1,5 @@
+import { fileURLToPath } from 'node:url';
+
 export interface VDesktopConfig {
   sidecarPath?: string;
   sidecarArgs?: string[];
@@ -14,7 +16,7 @@ export interface VDesktopConfig {
 export const defaultConfig: Required<VDesktopConfig> = {
   sidecarPath: 'python',
   sidecarArgs: ['-m', 'dshv', '--rpc', 'stdio'],
-  sidecarCwd: 'D:\Project\dsh-virtaul-computer\sidecar',
+  sidecarCwd: fileURLToPath(new URL('../sidecar/', import.meta.url)),
   callTimeoutMs: 60000,
   framePort: 8790,
   framePortMax: 8799,

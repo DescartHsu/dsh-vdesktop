@@ -5,7 +5,7 @@ node_modules/
 .deepseek-brain/
 dsh-deepseek-brain-preset/
 .dshv/
-tools/
+/tools/
 
 # 设计文档 / 开发史（保留在作者本地，不随仓库发布）
 docs/
