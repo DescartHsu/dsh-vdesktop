@@ -64,8 +64,11 @@ export class FrameServer {
     return (this.server.address() as { port?: number } | null)?.port ?? 0;
   }
 
-  close(): void {
-    this.server.close();
+  close(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.server.close(error => error ? reject(error) : resolve());
+      this.server.closeAllConnections();
+    });
   }
 
   private listenOne(port: number): Promise<http.Server> {

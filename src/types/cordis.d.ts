@@ -21,6 +21,7 @@ declare module '@deepseek-ai/cordis' {
   }
 
   export interface Context {
+    effect(setup: () => () => void | Promise<void>): unknown;
     computerUse?: ComputerUseRegistry;
     tools?: ToolRegistry;
     logger?: Logger;

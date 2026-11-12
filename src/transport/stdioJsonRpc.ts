@@ -23,6 +23,7 @@ export class StdioJsonRpc extends EventEmitter {
   private pending = new Map<number, Pending>();
   private opts: StdioJsonRpcOptions;
   private starting: Promise<void> | null = null;
+  private stopped = false;
 
   constructor(opts: StdioJsonRpcOptions) {
     super();
@@ -34,6 +35,7 @@ export class StdioJsonRpc extends EventEmitter {
   }
 
   async start(): Promise<void> {
+    if (this.stopped) throw new Error('sidecar transport is closed');
     if (this.alive) return;
     if (this.starting) return this.starting;
     this.starting = new Promise<void>((resolve, reject) => {
@@ -44,7 +46,11 @@ export class StdioJsonRpc extends EventEmitter {
         stdio: ['pipe', 'pipe', 'pipe'],
       });
       this.proc = proc;
-      proc.once('error', (e) => { this.starting = null; reject(e); });
+      proc.once('error', (e) => {
+        this.starting = null;
+        if (proc.pid === undefined) this.proc = null;
+        reject(e);
+      });
       proc.once('spawn', () => { this.starting = null; resolve(); });
       proc.once('exit', (code, signal) => {
         this.proc = null;
@@ -78,6 +84,7 @@ export class StdioJsonRpc extends EventEmitter {
   }
 
   async call<T = unknown>(method: string, params?: unknown, timeoutMs?: number): Promise<T> {
+    if (this.stopped) throw new Error('sidecar transport is closed');
     if (!this.alive) await this.start();
     const proc = this.proc;
     if (!proc) throw new Error('sidecar not started');
@@ -101,12 +108,13 @@ export class StdioJsonRpc extends EventEmitter {
   }
 
   async stop(): Promise<void> {
+    this.stopped = true;
     if (!this.proc) return;
     const proc = this.proc;
-    try { proc.stdin.end(); } catch {}
     await new Promise<void>((resolve) => {
-      const killT = setTimeout(() => { try { proc.kill('SIGKILL'); } catch {} resolve(); }, 2000);
-      proc.once('exit', () => { clearTimeout(killT); resolve(); });
+      const killT = setTimeout(() => proc.kill('SIGKILL'), 2000);
+      proc.once('close', () => { clearTimeout(killT); resolve(); });
+      proc.stdin.end();
     });
     this.proc = null;
   }

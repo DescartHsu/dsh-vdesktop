@@ -60,10 +60,12 @@
 在已安装 DSH 命令行的 PowerShell 中，将插件加入桌面配置：
 
 ```powershell
-dsh plugin --profile desktop add dsh-vdesktop@0.2.2
+dsh plugin --profile desktop add dsh-vdesktop@0.2.3
 ```
 
-也可以将命令中的 `dsh-vdesktop@0.2.2` 换成 [GitHub 安装包](https://github.com/DescartHsu/dsh-vdesktop/releases/download/v0.2.2/dsh-vdesktop-0.2.2.tgz)的下载地址。
+也可以将命令中的 `dsh-vdesktop@0.2.3` 换成 [GitHub 安装包](https://github.com/DescartHsu/dsh-vdesktop/releases/download/v0.2.3/dsh-vdesktop-0.2.3.tgz)的下载地址。
+
+从 0.2.1 或 0.2.2 升级时，请先从「应用 → 退出」完整退出 DSH，再运行上面的安装命令。旧版在热卸载时可能继续占用插件目录；0.2.3 修复了这项资源清理。
 
 安装命令会自动启用插件，安装完成后重新打开 DSH。使用 Web profile 时将命令中的 `desktop` 换成 `web`。插件会自行定位随包安装的 sidecar。本地 Web 界面默认支持 `http://127.0.0.1:3080`，使用其他本地 Web 地址时可在插件配置中设置 `webOrigin`。
 

@@ -23,24 +23,23 @@ export function apply(ctx: Context, raw: Partial<VDesktopConfig> = {}): void {
 
   // 窗口模式最小版（大脑 209dcfd7f617 / f63445bf56e9）：
   // 宿主 HTTP 帧数据面。fail fast 语义下端口全占 → 记 error，工具面不受影响
-  let frame: FrameServer | undefined;
-  FrameServer
+  const frameReady = FrameServer
     .start({
       supervisor,
       cfg: cfg as Required<VDesktopConfig>,
       log: (m) => ctx.logger?.info?.(m),
     })
     .then((f) => {
-      frame = f;
       ctx.logger?.info?.(`[dsh-vdesktop] frame data plane ready: 127.0.0.1:${f.port}`);
+      return f;
     })
     .catch((e) => {
       ctx.logger?.error?.(`[dsh-vdesktop] frame data plane unavailable: ${String(e)}`);
     });
 
-  ctx.on?.('dispose', async () => {
-    frame?.close();
-    await supervisor.shutdown();
+  ctx.effect(() => async () => {
+    const frame = await frameReady;
+    await Promise.all([frame?.close(), supervisor.shutdown()]);
   });
 
   ctx.logger?.info?.(
