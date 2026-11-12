@@ -1,7 +1,12 @@
 {
   "name": "dsh-vdesktop",
   "version": "0.2.1",
-  "private": true,
+  "description": "DeepSeek Harness 的 Windows 虚拟桌面插件，带可拖动的桌面面板入口。",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DescartHsu/dsh-vdesktop.git"
+  },
   "type": "module",
   "main": "lib/index.js",
   "exports": {
