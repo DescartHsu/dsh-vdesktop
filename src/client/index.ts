@@ -7,6 +7,7 @@
  * 数据面端口探测：8790..8799 GET /vdesk/desktops（宿主启动时已 fail-fast 探测）。
  */
 import { VDesktopPanel } from './VDesktopPanel.js';
+import { attachLauncher } from './launcher.js';
 
 const FRAME_PORTS: number[] = Array.from({ length: 10 }, (_, i) => 8790 + i);
 
@@ -69,14 +70,14 @@ export function install(loader: {
             ctx.locale.register('vdesktop', {
               zh: {
                 toggle: '虚拟桌面',
-                open: '打开虚拟桌面窗口',
+                open: '单击开关虚拟桌面，拖动可移动按钮',
                 close: '关闭',
                 refresh: '刷新桌面列表',
                 noDesktop: '（无虚拟桌面，可先用 vdesk_desktop_create 创建）',
               },
               en: {
                 toggle: 'Virtual Desktop',
-                open: 'Open virtual desktop window',
+                open: 'Click to toggle Virtual Desktop, or drag to move the button',
                 close: 'Close',
                 refresh: 'Refresh desktop list',
                 noDesktop: '(no virtual desktop; create one via vdesk_desktop_create)',
@@ -92,9 +93,15 @@ export function install(loader: {
                 const [info, setInfo] = React.useState<FrameInfo | null>(null);
                 const [desktop, setDesktop] = React.useState('');
                 const [reprobe, setReprobe] = React.useState(0);
+                const launcherRef = React.useRef<HTMLButtonElement | null>(null);
                 const rootRef = React.useRef<HTMLElement | null>(null);
                 const panelRef = React.useRef<HTMLElement | null>(null);
                 const resizeHandleRef = React.useRef<HTMLElement | null>(null);
+
+                React.useEffect(() => {
+                  const button = launcherRef.current;
+                  if (button) return attachLauncher(button, () => setOpen((value) => !value));
+                }, []);
 
                 React.useEffect(() => {
                   if (!open) return;
@@ -198,7 +205,7 @@ export function install(loader: {
                     {
                       type: 'button',
                       title: t('open'),
-                      onClick: () => setOpen((o: boolean) => !o),
+                      ref: launcherRef,
                       style: {
                         position: 'fixed',
                         right: 24,
@@ -209,7 +216,9 @@ export function install(loader: {
                         color: '#ddd',
                         border: '1px solid #444',
                         borderRadius: 6,
-                        cursor: 'pointer',
+                        cursor: 'grab',
+                        touchAction: 'none',
+                        userSelect: 'none',
                         font: '13px/1.4 system-ui',
                       },
                     },
