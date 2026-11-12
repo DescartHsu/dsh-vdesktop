@@ -14,7 +14,10 @@ export function attachLauncher(button: HTMLButtonElement, toggle: () => void): (
     const { width, height } = button.getBoundingClientRect();
     const x = Math.max(0, Math.min(point.x, window.innerWidth - width));
     const y = Math.max(0, Math.min(point.y, window.innerHeight - height));
-    Object.assign(button.style, { left: x + 'px', top: y + 'px', right: 'auto', bottom: 'auto' });
+    // DSH sets this inset for its native title bar and clears it in fullscreen.
+    // CSS also re-clamps a restored position when the host applies its theme after mount.
+    const top = `max(${y}px, var(--dsh-frame-chrome-top, var(--dsh-windows-titlebar-height, 0px)))`;
+    Object.assign(button.style, { left: x + 'px', top, right: 'auto', bottom: 'auto' });
     position = { x, y };
   }
 

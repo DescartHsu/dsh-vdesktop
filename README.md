@@ -60,10 +60,10 @@
 在已安装 DSH 命令行的 PowerShell 中，将插件加入桌面配置：
 
 ```powershell
-dsh plugin --profile desktop add dsh-vdesktop@0.2.1
+dsh plugin --profile desktop add dsh-vdesktop@0.2.2
 ```
 
-也可以将命令中的 `dsh-vdesktop@0.2.1` 换成 [GitHub 安装包](https://github.com/DescartHsu/dsh-vdesktop/releases/download/v0.2.1/dsh-vdesktop-0.2.1.tgz)的下载地址。
+也可以将命令中的 `dsh-vdesktop@0.2.2` 换成 [GitHub 安装包](https://github.com/DescartHsu/dsh-vdesktop/releases/download/v0.2.2/dsh-vdesktop-0.2.2.tgz)的下载地址。
 
 安装命令会自动启用插件，安装完成后重新打开 DSH。使用 Web profile 时将命令中的 `desktop` 换成 `web`。插件会自行定位随包安装的 sidecar。本地 Web 界面默认支持 `http://127.0.0.1:3080`，使用其他本地 Web 地址时可在插件配置中设置 `webOrigin`。
 

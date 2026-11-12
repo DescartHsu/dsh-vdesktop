@@ -217,6 +217,7 @@ export function install(loader: {
                         border: '1px solid #444',
                         borderRadius: 6,
                         cursor: 'grab',
+                        WebkitAppRegion: 'no-drag',
                         touchAction: 'none',
                         userSelect: 'none',
                         font: '13px/1.4 system-ui',
